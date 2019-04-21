@@ -56,7 +56,7 @@ def main():  # Main method for the script, write code here
                                       hp_ui_location[0][3]
                                       )
     while get_doses_left() > 0:
-        Mouse.sleep(294413, 477855)  # 5 to 8 min approx 294413, 477855
+        Mouse.sleep_with_countdown(294413, 477855, 10000)  # 5 to 8 min approx 294413, 477855
         open_inventory_and_save_potion_locations_and_doses()
         open_inventory_and_get_rock_cake_box()
         log.info('Drinking absorptions until full')
@@ -172,7 +172,6 @@ def open_inventory_and_save_potion_locations_and_doses():
     # sorting by x, y coordinates
     list_absorption_potions.sort(key=operator.itemgetter(0))
     list_absorption_potions.sort(key=operator.itemgetter(1))
-
 
 def is_inventory_open():
     result = Mouse.get_on_screen(PanelIcons.ICON_INVENTORY_SELECTED)

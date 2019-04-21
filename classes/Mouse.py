@@ -52,6 +52,19 @@ class Mouse:
         log.info('Sleeping for ' + str(sleep_time) + ' milliseconds'),
         time.sleep(sleep_time / 1000)
 
+    def sleep_with_countdown(sleep_time_min_milliseconds, sleep_time_max_milliseconds, countdown_interval_milliseconds):
+        sleep_time = randint(sleep_time_min_milliseconds, sleep_time_max_milliseconds)
+        while sleep_time > 0:
+            if sleep_time >= countdown_interval_milliseconds:
+                log.info(str(sleep_time / 1000 / 60) + ' minutes left to sleep')
+                sleep_time -= countdown_interval_milliseconds
+                time.sleep(countdown_interval_milliseconds / 1000)
+            else:
+                log.info('Will end in ' + str(sleep_time / 1000 / 60) + ' seconds')
+                time.sleep(sleep_time / 1000)
+                break
+
+
     @staticmethod
     def click(sleep_time_milliseconds):
         time.sleep(sleep_time_milliseconds / 1000)
