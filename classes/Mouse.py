@@ -29,10 +29,10 @@ class Mouse:
                                                       sleep_time_max_milliseconds):
         x = pyautogui.position().x
         y = pyautogui.position().y
-        bbox = ImageBox.get_bbox(x, y, width, height)
+        bbox_to_compare = ImageBox.get_bbox(x - width, y - height, width * 2, height * 2)
         sleep_time = randint(sleep_time_min_milliseconds, sleep_time_max_milliseconds)
 
-        im_before = ImageBox.image_grab_bbox(bbox)
+        im_before = ImageBox.image_grab_bbox(bbox_to_compare)
         log.debug('Created image grab before sleep')
         log.debug(im_before)
 
@@ -40,7 +40,7 @@ class Mouse:
 
         time.sleep(sleep_time/1000)
 
-        im_after = ImageBox.image_grab_bbox(bbox)
+        im_after = ImageBox.image_grab_bbox(bbox_to_compare)
         log.debug('Created image grab after sleep')
         log.debug(im_after)
         if not ImageBox.are_equals(im_before, im_after):
@@ -55,15 +55,16 @@ class Mouse:
         log.info('Sleeping for ' + str(sleep_time) + ' milliseconds'),
         time.sleep(sleep_time / 1000)
 
+    @staticmethod
     def sleep_with_countdown(sleep_time_min_milliseconds, sleep_time_max_milliseconds, countdown_interval_milliseconds):
         sleep_time = randint(sleep_time_min_milliseconds, sleep_time_max_milliseconds)
         while sleep_time > 0:
             if sleep_time >= countdown_interval_milliseconds:
-                log.info(str(sleep_time / 1000 / 60) + ' minutes left to sleep')
+                log.info(str(round(sleep_time / 1000 / 60, 2)) + ' minutes left to sleep')
                 sleep_time -= countdown_interval_milliseconds
                 time.sleep(countdown_interval_milliseconds / 1000)
             else:
-                log.info('Will end in ' + str(sleep_time / 1000 / 60) + ' seconds')
+                log.info('Will end in ' + str(round(sleep_time / 1000 / 60, 2)) + ' seconds')
                 time.sleep(sleep_time / 1000)
                 break
 
