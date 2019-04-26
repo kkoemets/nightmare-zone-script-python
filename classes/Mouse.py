@@ -43,6 +43,9 @@ class Mouse:
         im_after = ImageBox.image_grab_bbox(bbox)
         log.debug('Created image grab after sleep')
         log.debug(im_after)
+        if not ImageBox.are_equals(im_before, im_after):
+            time.sleep(300 / 1000)
+            im_after = ImageBox.image_grab_bbox(bbox_to_compare)
 
         return not ImageBox.are_equals(im_before, im_after)
 

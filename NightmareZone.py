@@ -61,6 +61,7 @@ def main():  # Main method for the script, write code here
         open_inventory_and_get_rock_cake_box()
         log.info('Drinking absorptions until full')
         open_inventory_and_drink_absorptions_full()
+
         log.info('Eating Rock Cake')
         open_inventory_and_guzzle_until_hp_is_1(image_hp)
         image_hp = Mouse.get_image_of_box(hp_ui_location[0][0],
@@ -97,8 +98,8 @@ def open_inventory_and_guzzle_until_hp_is_1(saved_im):
     open_inventory(temp_delay)
 
     random_rock_cake_location = \
-        rock_cake_location[0].left + Mouse.get_rand_int(0, 16), \
-        rock_cake_location[0].top + Mouse.get_rand_int(0, 1)
+        rock_cake_location[0] + Mouse.get_rand_int(0, 16), \
+        rock_cake_location[1] + Mouse.get_rand_int(0, 1)
     log.debug('Rock Cake location box ' + str(rock_cake_location))
     log.debug('Pixel to be clicked on Rock cake ' + str(random_rock_cake_location))
     Mouse.move_mouse_to_location(
@@ -122,12 +123,11 @@ def open_inventory_and_guzzle_until_hp_is_1(saved_im):
 
 def open_inventory_and_guzzle_rock_cake():
     open_inventory(temp_delay)
+    log.info(rock_cake_location)
 
     random_rock_cake_location = \
-        rock_cake_location[0].left + Mouse.get_rand_int(0, 16), \
-        rock_cake_location[0].top + Mouse.get_rand_int(0, 1)
-    log.debug('Rock Cake location box ' + str(rock_cake_location))
-    log.debug('Pixel to be clicked on Rock cake ' + str(random_rock_cake_location))
+        rock_cake_location[0] + Mouse.get_rand_int(0, 16), \
+        rock_cake_location[1] + Mouse.get_rand_int(0, 1)
     Mouse.move_mouse_to_location(
         random_rock_cake_location[0],
         random_rock_cake_location[1]
@@ -163,7 +163,8 @@ def open_inventory_and_drink_absorptions_full():
 
 def open_inventory_and_save_potion_locations_and_doses():
     open_inventory(temp_delay)
-
+    global absorption_potions_list
+    absorption_potions_list = []
     for item in array_list_potions_enum:
         for potion in Mouse.get_all_on_screen_as_list(item):
             doses = (int(str(item)[-1]))
