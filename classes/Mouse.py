@@ -10,7 +10,7 @@ from classes.ImageBox import ImageBox
 
 log = logging.getLogger("Mouse")
 
-log.setLevel(logging.DEBUG)
+log.setLevel(logging.INFO)
 
 
 class Mouse:
@@ -52,7 +52,7 @@ class Mouse:
     @staticmethod
     def sleep(sleep_time_min_milliseconds, sleep_time_max_milliseconds):
         sleep_time = randint(sleep_time_min_milliseconds, sleep_time_max_milliseconds)
-        log.info('Sleeping for ' + str(sleep_time) + ' milliseconds'),
+        log.debug('Sleeping for ' + str(sleep_time) + ' milliseconds'),
         time.sleep(sleep_time / 1000)
 
     @staticmethod
@@ -82,16 +82,16 @@ class Mouse:
         :return:
         """
         items = list(pyautogui.locateAllOnScreen(item.value))
-        log.debug(str(item) + ' : ' + str(len(items)) + ' on screen')
+        log.info(str(item) + ' : ' + str(len(items)) + ' on screen')
         return items
 
     @staticmethod
     def get_on_screen(item):
         target = pyautogui.locateOnScreen(item.value)
         if target is not None:
-            log.debug('Found ' + str(item) + ' on screen')
+            log.info('Found ' + str(item) + ' on screen')
         else:
-            log.debug('Unable to find ' + str(item) + ' on screen')
+            log.info('Unable to find ' + str(item) + ' on screen')
         return target
 
     @staticmethod
