@@ -20,9 +20,15 @@ class Mouse:
         return ImageBox.are_equals(im_0, im_1)
 
     @staticmethod
-    def get_image_of_box(x, y, width, height):
-        bbox = ImageBox.get_bbox(x, y, width, height)
+    def get_image_out_of_location(location):
+        bbox = ImageBox.get_bbox(
+            location[0],
+            location[1],
+            location[2],
+            location[3]
+        )
         return ImageBox.image_grab_bbox(bbox)
+
 
     @staticmethod
     def click_and_sleep_and_return_if_change_occurred(width, height, sleep_time_min_milliseconds,
@@ -48,6 +54,12 @@ class Mouse:
             im_after = ImageBox.image_grab_bbox(bbox_to_compare)
 
         return not ImageBox.are_equals(im_before, im_after)
+
+    @staticmethod
+    def compare_cached_images(image1, image2):
+        return ImageBox.are_equals(image1, image2)
+
+
 
     @staticmethod
     def sleep(sleep_time_min_milliseconds, sleep_time_max_milliseconds):
@@ -95,7 +107,7 @@ class Mouse:
         return target
 
     @staticmethod
-    def move_mouse_random_location_in_box(box):
+    def move_humanly_mouse_random_location_in_box(box):
         hc = HumanClicker()
         box = Box(box)
         delta_x = randint(0, box.width())
@@ -104,7 +116,7 @@ class Mouse:
 
     # todo look ..._location_in_box
     @staticmethod
-    def move_mouse_to_location(x, y):
+    def move_humanly_mouse_to_location(x, y):
         hc = HumanClicker()
         hc.move((x, y), 0.5)
 

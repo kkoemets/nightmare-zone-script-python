@@ -15,13 +15,24 @@ log.setLevel(logging.DEBUG)
 array_list_potions_enum = [Items.ITEM_ABSORPTION_POTION_4, Items.ITEM_ABSORPTION_POTION_3,
                            Items.ITEM_ABSORPTION_POTION_2, Items.ITEM_ABSORPTION_POTION_1]
 
-absorption_potions_list = []
-temp_delay = 500  # temporary, used for constant timing between clicks
-rock_cake_location = []
-hp_ui_location = []  # will be used to check whether something has happened to client
+absorption_potions = None
+rock_cake_location = None
+hp_1_location = None
+opened_inventory_location = None
+cached_opened_inventory_image = None
+closed_inventory_location = None
+cached_closed_inventory_image = None
+cached_hp_1_image = None
+cached_rock_cake_image = None
 
 
 def main():  # Main method for the script, write code here
+    global opened_inventory_location, cached_opened_inventory_image
+    global closed_inventory_location, cached_closed_inventory_image
+    global hp_1_location, cached_hp_1_image
+    global absorption_potions
+    global rock_cake_location, cached_rock_cake_image
+
     print('Welcome to Nightmare Zone Script')
     print('Requirements: ')
     print('1. Make sure you are in a dream with absorption potions')
@@ -34,28 +45,16 @@ def main():  # Main method for the script, write code here
     find_inventory_and_open_and_save_location_with_cache()
 
     log.info('Trying to find absorption potions')
-    open_inventory_and_save_potion_locations_and_doses()
+    absorption_potions = get_absorption_potion_locations_and_doses()
 
     log.info('Drinking absorption potions until full')
-    open_inventory_and_drink_absorptions_full()
+    drink_absorptions_until_full(absorption_potions)
 
-    log.info('Checking whether HP is 1')
-    i = 0
-    while not is_hp_one():
-        i += 1
-        log.info('HP is not 1, eating Rock Cake')
-        open_inventory_and_guzzle_rock_cake()
-        if i == 20:
-            sys.exit('Something went wrong with guzzling rock cake!')
+    log.info('Trying to find rock cake and guzzle it')
+    find_and_guzzle_rock_cake()
 
-    log.info('HP is 1')
-    log.debug('Saving image from location where HP is shown 1, will be faster to check from now on')
-    image_hp = Mouse.get_image_of_box(hp_ui_location[0][0],
-                                      hp_ui_location[0][1],
-                                      hp_ui_location[0][2],
-                                      hp_ui_location[0][3]
-                                      )
-    while get_doses_left() > 0:
+    while get_doses_left(absorption_potions) > 0:
+        Mouse.move_humanly_mouse_to_location(5, 5)
         Mouse.sleep_with_countdown(294413, 477855, 10000)  # 5 to 8 min approx 294413, 477855
 
         open_inventory_if_needed()
@@ -63,7 +62,7 @@ def main():  # Main method for the script, write code here
         log.info('Rediscovering absorption potions')
         absorption_potions = get_absorption_potion_locations_and_doses()
         log.info('Drinking absorptions until full')
-        open_inventory_and_drink_absorptions_full()
+        drink_absorptions_until_full(absorption_potions)
 
         log.info('Eating Rock Cake')
         rock_cake_image_to_check = Mouse.get_image_out_of_location(rock_cake_location)
@@ -195,15 +194,13 @@ def drink_absorptions_until_full(pots_location_list):
     return
 
 
-def open_inventory_and_save_potion_locations_and_doses():
-    open_inventory(temp_delay)
-    global absorption_potions_list
-    absorption_potions_list = []
+def get_absorption_potion_locations_and_doses():
+    abs_pot_list = []
     for item in array_list_potions_enum:
         for potion in Mouse.get_all_on_screen_as_list(item):
             doses = (int(str(item)[-1]))
             absorption_potion = AbsorptionPotion(potion[0], potion[1], potion[2], potion[3], doses)
-            absorption_potions_list.append(absorption_potion)
+            abs_pot_list.append(absorption_potion)
     # sorting by x, y coordinates
     abs_pot_list.sort(key=operator.itemgetter(0))
     abs_pot_list.sort(key=operator.itemgetter(1))
@@ -214,9 +211,9 @@ def get_location(saved_image_png):
     return Mouse.get_on_screen(saved_image_png)
 
 
-def get_doses_left():
+def get_doses_left(potions):
     dose_counter = 0
-    for potion in absorption_potions_list:
+    for potion in potions:
         dose_counter += potion.doses
     return dose_counter
 
