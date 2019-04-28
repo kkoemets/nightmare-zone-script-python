@@ -1,6 +1,7 @@
 import logging
 import operator
 import sys
+from config import installmodules
 
 from classes.AbsorptionPotion import AbsorptionPotion
 from classes.Mouse import Mouse
