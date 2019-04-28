@@ -16,11 +16,6 @@ log.setLevel(logging.INFO)
 class Mouse:
 
     @staticmethod
-    def compare_cached_images(image1, image2):
-        return ImageHandler.compare_cached_images(image1, image2)
-
-
-    @staticmethod
     def get_rand_int(min_int, max_int):
         return randint(min_int, max_int)
 
@@ -51,13 +46,6 @@ class Mouse:
             i += 1
 
         return not ImageHandler.compare_cached_images(im_before, im_after)
-
-
-    @staticmethod
-    def sleep(sleep_time_min_milliseconds, sleep_time_max_milliseconds):
-        sleep_time = randint(sleep_time_min_milliseconds, sleep_time_max_milliseconds)
-        log.debug('Sleeping for ' + str(sleep_time) + ' milliseconds'),
-        time.sleep(sleep_time / 1000)
 
 
     @staticmethod
@@ -116,8 +104,3 @@ class Mouse:
     @staticmethod
     def right_click():
         pyautogui.rightClick()
-
-
-    @staticmethod
-    def get_image_out_of_location(location):
-        return ImageHandler.get_image_out_of_location(location)

@@ -26,7 +26,6 @@ class ImageBox:
     @staticmethod
     def image_grab_bbox(bbox):
         image_grab = ImageGrab.grab(bbox=bbox)     # bbox=(a,b,c,d)
-        # log.debug(image_grab.getbbox())
         return image_grab
 
     @staticmethod
