@@ -79,14 +79,14 @@ class Mouse:
 
     @staticmethod
     def get_all_on_screen_as_list(item):
-        items = list(pyautogui.locateAllOnScreen(item.value))
+        items = list(pyautogui.locateAllOnScreen(item.value, confidence=.98))
         log.info(str(item) + ' : ' + str(len(items)) + ' on screen')
         return items
 
 
     @staticmethod
     def get_on_screen(item):
-        target = pyautogui.locateOnScreen(item.value)
+        target = pyautogui.locateOnScreen(item.value, confidence=.98)
         if target is not None:
             log.info('Found ' + str(item) + ' on screen')
         else:

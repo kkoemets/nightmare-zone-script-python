@@ -15,26 +15,25 @@ log.setLevel(logging.DEBUG)
 array_list_potions_enum = [Items.ITEM_ABSORPTION_POTION_4, Items.ITEM_ABSORPTION_POTION_3,
                            Items.ITEM_ABSORPTION_POTION_2, Items.ITEM_ABSORPTION_POTION_1]
 
-absorption_potions = None
-rock_cake_location = None
-hp_1_location = None
-opened_inventory_location = None
-cached_hp_1_image = None
-
 
 def main():  # Main method for the script, write code here
-    global opened_inventory_location
-    global hp_1_location, cached_hp_1_image
-    global absorption_potions
-    global rock_cake_location
-
     print('Welcome to Nightmare Zone Script')
     print('Requirements: ')
     print('1. Make sure you are in a dream with absorption potions')
     print('2. Rock Cake must be in the last row of inventory')
     print('3. With this version do not move/resize OSRS client window')
     print('4. All requirements above must be fulfilled to avoid a ban')
+    min_interval = input('Enter minimum time in minutes to sleep (minimum 2 min): ')
+    max_interval = input('Enter maximum time in minutes to sleep (maximum 19 min): ')
+    try:
+        min_interval = float(min_interval)
+        max_interval = float(max_interval)
+    except ValueError:
+        sys.exit('Sleep min/max time was not a number!')
+    if min_interval < 2 or max_interval > 19 or min_interval >= max_interval:
+        sys.exit('Sleep times were not correct!')
     input('Press enter to start...')
+
     while True:
         open_inventory_if_closed()
 
@@ -49,7 +48,8 @@ def main():  # Main method for the script, write code here
         Mouse.move_humanly_mouse_to_location(5, 5)
         if not get_doses_left(absorption_potions) > 0:
             break
-        Mouse.sleep_with_countdown(294413, 477855, 10000)  # 5 to 8 min approx 294413, 477855
+        Mouse.sleep_with_countdown(min_interval * 60 * 1000, max_interval * 60 * 1000, 10000)  # 5 to 8 min approx 294413, 477855
+
 
 ########################################################################################################################
 def open_inventory_if_closed():
@@ -65,8 +65,6 @@ def open_inventory_if_closed():
 
 def find_and_guzzle_rock_cake():
     cake_location = Mouse.get_on_screen(Items.ITEM_ROCK_CAKE)
-    global rock_cake_location
-    rock_cake_location = cake_location
     if cake_location is None:
         sys.exit('Could not find rock cake, exiting script')
     else:
@@ -76,8 +74,6 @@ def find_and_guzzle_rock_cake():
 
 
 def guzzle_rock_cake_uncached():
-    global hp_1_location, cached_hp_1_image
-
     i = 0  # fail-safe check
     while True:
         i += 1
@@ -89,14 +85,14 @@ def guzzle_rock_cake_uncached():
             if i == 50:
                 sys.exit('Something went wrong with guzzling rock cake!')
         else:
-            cached_hp_1_image = Mouse.get_image_out_of_location(hp_1_location)
             break
     log.info('HP is 1')
 
 
 def guzzle_rock_cake():
     Mouse.right_click()
-    Mouse.click(1)
+    sleep = Mouse.get_rand_int(67, 133)
+    Mouse.click(sleep)
 
 
 def drink_absorptions_until_full(pots_location_list):
@@ -111,7 +107,7 @@ def drink_absorptions_until_full(pots_location_list):
             ))
             while pots_location_list[i].doses > 0:
                 log.info('Drinking a dose of absorption potion')
-                if not Mouse.click_and_sleep_and_return_if_change_occurred(30, 30, 732, 978):
+                if not Mouse.click_and_sleep_and_return_if_change_occurred(30, 30, 587, 734):
                     return
                 pots_location_list[i].doses -= 1
         i += 1
