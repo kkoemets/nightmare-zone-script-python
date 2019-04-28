@@ -4,30 +4,25 @@ from random import randint
 
 import pyautogui
 from pyclick import HumanClicker
+import cv2
 
 from classes.Box import Box
-from classes.ImageBox import ImageBox
+from classes.ImageHandler import ImageHandler
 
 log = logging.getLogger("Mouse")
 
 log.setLevel(logging.INFO)
 
-
 class Mouse:
 
     @staticmethod
-    def are_images_equal(im_0, im_1):
-        return ImageBox.are_equals(im_0, im_1)
+    def compare_cached_images(image1, image2):
+        return ImageHandler.compare_cached_images(image1, image2)
+
 
     @staticmethod
-    def get_image_out_of_location(location):
-        bbox = ImageBox.get_bbox(
-            location[0],
-            location[1],
-            location[2],
-            location[3]
-        )
-        return ImageBox.image_grab_bbox(bbox)
+    def get_rand_int(min_int, max_int):
+        return randint(min_int, max_int)
 
 
     @staticmethod
@@ -35,30 +30,24 @@ class Mouse:
                                                       sleep_time_max_milliseconds):
         x = pyautogui.position().x
         y = pyautogui.position().y
-        bbox_to_compare = ImageBox.get_bbox(x - width, y - height, width * 2, height * 2)
         sleep_time = randint(sleep_time_min_milliseconds, sleep_time_max_milliseconds)
 
-        im_before = ImageBox.image_grab_bbox(bbox_to_compare)
+        bbox_to_compare = ImageHandler.get_bbox_out_of_4_points(x - width, y - height, width * 2, height * 2)
+        im_before = ImageHandler.get_image_out_of_bbox(bbox_to_compare)
         log.debug('Created image grab before sleep')
-        log.debug(im_before)
 
         pyautogui.click()
 
         time.sleep(sleep_time/1000)
 
-        im_after = ImageBox.image_grab_bbox(bbox_to_compare)
+        im_after = ImageHandler.get_image_out_of_bbox(bbox_to_compare)
         log.debug('Created image grab after sleep')
-        log.debug(im_after)
-        if not ImageBox.are_equals(im_before, im_after):
+
+        if not ImageHandler.compare_cached_images(im_before, im_after):
             time.sleep(300 / 1000)
-            im_after = ImageBox.image_grab_bbox(bbox_to_compare)
+            im_after = ImageHandler.get_image_out_of_bbox(bbox_to_compare)
 
-        return not ImageBox.are_equals(im_before, im_after)
-
-    @staticmethod
-    def compare_cached_images(image1, image2):
-        return ImageBox.are_equals(image1, image2)
-
+        return not ImageHandler.compare_cached_images(im_before, im_after)
 
 
     @staticmethod
@@ -66,6 +55,7 @@ class Mouse:
         sleep_time = randint(sleep_time_min_milliseconds, sleep_time_max_milliseconds)
         log.debug('Sleeping for ' + str(sleep_time) + ' milliseconds'),
         time.sleep(sleep_time / 1000)
+
 
     @staticmethod
     def sleep_with_countdown(sleep_time_min_milliseconds, sleep_time_max_milliseconds, countdown_interval_milliseconds):
@@ -86,16 +76,13 @@ class Mouse:
         time.sleep(sleep_time_milliseconds / 1000)
         pyautogui.click()
 
+
     @staticmethod
     def get_all_on_screen_as_list(item):
-        """
-        Returns all instances of a image on screen as list
-        :param item:
-        :return:
-        """
         items = list(pyautogui.locateAllOnScreen(item.value))
         log.info(str(item) + ' : ' + str(len(items)) + ' on screen')
         return items
+
 
     @staticmethod
     def get_on_screen(item):
@@ -106,24 +93,28 @@ class Mouse:
             log.info('Unable to find ' + str(item) + ' on screen')
         return target
 
+
     @staticmethod
     def move_humanly_mouse_random_location_in_box(box):
         hc = HumanClicker()
         box = Box(box)
         delta_x = randint(0, box.width())
         delta_y = randint(0, box.height())
-        hc.move((box.x() + delta_x, box.y() + delta_y), 0.5)
+        to_location = (int(box.x() + delta_x), int(box.y() + delta_y))
+        hc.move(to_location, 0.5)
 
-    # todo look ..._location_in_box
+
     @staticmethod
     def move_humanly_mouse_to_location(x, y):
         hc = HumanClicker()
-        hc.move((x, y), 0.5)
+        hc.move((int(x), int(y)), 0.5)
 
-    @staticmethod
-    def get_rand_int(min_int, max_int):
-        return randint(min_int, max_int)
 
     @staticmethod
     def right_click():
         pyautogui.rightClick()
+
+
+    @staticmethod
+    def get_image_out_of_location(location):
+        return ImageHandler.get_image_out_of_location(location)
