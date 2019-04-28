@@ -48,8 +48,10 @@ def main():  # Main method for the script, write code here
         Mouse.move_humanly_mouse_to_location(5, 5)
         if not get_doses_left(absorption_potions) > 0:
             break
-        Mouse.sleep_with_countdown(min_interval * 60 * 1000, max_interval * 60 * 1000, 10000)  # 5 to 8 min approx 294413, 477855
 
+        min_interval = int(min_interval * 60 * 1000)
+        max_interval = int(max_interval * 60 * 1000)
+        Mouse.sleep_with_countdown(min_interval, max_interval, 10000)
 
 ########################################################################################################################
 def open_inventory_if_closed():
