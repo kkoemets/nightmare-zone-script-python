@@ -43,9 +43,11 @@ class Mouse:
         im_after = ImageHandler.get_image_out_of_bbox(bbox_to_compare)
         log.debug('Created image grab after sleep')
 
-        if not ImageHandler.compare_cached_images(im_before, im_after):
-            time.sleep(300 / 1000)
+        i = 0
+        while i < 20 and ImageHandler.compare_cached_images(im_before, im_after):
             im_after = ImageHandler.get_image_out_of_bbox(bbox_to_compare)
+            time.sleep(45 / 1000)
+            i += 1
 
         return not ImageHandler.compare_cached_images(im_before, im_after)
 
