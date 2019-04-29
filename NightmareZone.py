@@ -35,11 +35,17 @@ def main():  # Main method for the script, write code here
         sys.exit('Sleep times were not correct!')
     input('Press enter to start...')
 
+    prev_interval_abs_pots = None
+
     while True:
         open_inventory_if_closed()
 
         log.info('Trying to find absorption potions')
+
         absorption_potions = get_absorption_potion_locations_and_doses()
+        if get_doses_left(absorption_potions) == get_doses_left(prev_interval_abs_pots):
+            sys.exit('Did not drink any absorption potions after an sleep, exiting!')
+        prev_interval_abs_pots = absorption_potions
 
         log.info('Drinking absorption potions until full')
         drink_absorptions_until_full(absorption_potions)
@@ -56,9 +62,9 @@ def main():  # Main method for the script, write code here
 
 ########################################################################################################################
 def open_inventory_if_closed():
-    inventory = Mouse.get_on_screen(PanelIcons.ICON_INVENTORY_SELECTED)
+    inventory = Mouse.get_on_screen(PanelIcons.ICON_INVENTORY_SELECTED, 0.97)
     if inventory is None:
-        inventory = Mouse.get_on_screen(PanelIcons.ICON_INVENTORY_UNSELECTED)
+        inventory = Mouse.get_on_screen(PanelIcons.ICON_INVENTORY_UNSELECTED, 0.97)
         if inventory is None:
             sys.exit('Could not find inventory icon, exiting script')
         else:
@@ -67,7 +73,7 @@ def open_inventory_if_closed():
 
 
 def find_and_guzzle_rock_cake():
-    cake_location = Mouse.get_on_screen(Items.ITEM_ROCK_CAKE)
+    cake_location = Mouse.get_on_screen(Items.ITEM_ROCK_CAKE, 0.96)
     if cake_location is None:
         sys.exit('Could not find rock cake, exiting script')
     else:
@@ -81,7 +87,7 @@ def guzzle_rock_cake_uncached():
     while True:
         i += 1
         log.info('Checking whether hp is 1')
-        hp_1_location = get_location(UI.UI_ICON_HP)
+        hp_1_location = Mouse.get_on_screen(UI.UI_ICON_HP, 0.98)
         if hp_1_location is None:
             log.info('HP is not 1, guzzling rock rake')
             guzzle_rock_cake()
@@ -120,7 +126,7 @@ def drink_absorptions_until_full(pots_location_list):
 def get_absorption_potion_locations_and_doses():
     abs_pot_list = []
     for item in array_list_potions_enum:
-        for potion in Mouse.get_all_on_screen_as_list(item):
+        for potion in Mouse.get_all_on_screen_as_list(item, .97):
             doses = (int(str(item)[-1]))
             absorption_potion = AbsorptionPotion(potion[0], potion[1], potion[2], potion[3], doses)
             abs_pot_list.append(absorption_potion)
@@ -130,11 +136,10 @@ def get_absorption_potion_locations_and_doses():
     return abs_pot_list
 
 
-def get_location(saved_image_png):
-    return Mouse.get_on_screen(saved_image_png)
-
-
 def get_doses_left(potions):
+    if potions is None:
+        return 0
+
     dose_counter = 0
     for potion in potions:
         dose_counter += potion.doses

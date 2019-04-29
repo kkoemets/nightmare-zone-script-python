@@ -69,15 +69,15 @@ class Mouse:
 
 
     @staticmethod
-    def get_all_on_screen_as_list(item):
-        items = list(pyautogui.locateAllOnScreen(item.value, confidence=.98))
+    def get_all_on_screen_as_list(item, confidence):
+        items = list(pyautogui.locateAllOnScreen(item.value, confidence=confidence))
         log.info(str(item) + ' : ' + str(len(items)) + ' on screen')
         return items
 
 
     @staticmethod
-    def get_on_screen(item):
-        target = pyautogui.locateOnScreen(item.value, confidence=.98)
+    def get_on_screen(item, confidence):
+        target = pyautogui.locateOnScreen(item.value, confidence=confidence)
         if target is not None:
             log.info('Found ' + str(item) + ' on screen')
         else:
@@ -104,3 +104,4 @@ class Mouse:
     @staticmethod
     def right_click():
         pyautogui.rightClick()
+
