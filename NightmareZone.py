@@ -18,8 +18,8 @@ list_absorption_potions_enum = [Items.ITEM_ABSORPTION_POTION_4, Items.ITEM_ABSOR
 list_abs_potions_enum = [Items.ITEM_ABS_POTION_4, Items.ITEM_ABS_POTION_3,
                          Items.ITEM_ABS_POTION_2, Items.ITEM_ABS_POTION_1]
 
-list_super_range_potions_enum = [Items.ITEM_SUPER_RANGE_POTION_4, Items.ITEM_SUPER_RANGE_POTION_3,
-                                 Items.ITEM_SUPER_RANGE_POTION_2, Items.ITEM_SUPER_RANGE_POTION_1]
+list_super_ranging_potions_enum = [Items.ITEM_SUPER_RANGING_POTION_4, Items.ITEM_SUPER_RANGING_POTION_3,
+                                   Items.ITEM_SUPER_RANGING_POTION_2, Items.ITEM_SUPER_RANGING_POTION_1]
 
 
 def main():  # Main method for the script, write code here
@@ -60,8 +60,9 @@ def main():  # Main method for the script, write code here
         log.info('Trying to find rock cake and guzzle it')
         find_and_guzzle_rock_cake()
 
-        super_range_potions = get_potion_doses_and_locations(list_super_range_potions_enum, 0.96)
-        drink_dose(super_range_potions)
+        super_ranging_potions = get_potion_doses_and_locations(list_super_ranging_potions_enum, 0.96)
+        log.debug('Drinking super ranging potion')
+        drink_dose(super_ranging_potions)
 
         Mouse.move_humanly_mouse_to_location(5, 5)
         if not get_doses_left(absorption_potions) > 0:
