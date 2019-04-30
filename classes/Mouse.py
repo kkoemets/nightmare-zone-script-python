@@ -79,9 +79,9 @@ class Mouse:
     def get_on_screen(item, confidence):
         target = pyautogui.locateOnScreen(item.value, confidence=confidence)
         if target is not None:
-            log.info('Found ' + str(item) + ' on screen')
+            log.debug('Found ' + str(item) + ' on screen')
         else:
-            log.info('Unable to find ' + str(item) + ' on screen')
+            log.debug('Unable to find ' + str(item) + ' on screen')
         return target
 
 

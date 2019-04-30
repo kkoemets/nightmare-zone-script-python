@@ -1,7 +1,6 @@
 import logging
 import operator
 import sys
-from config import installmodules
 
 from classes.AbsorptionPotion import AbsorptionPotion
 from classes.Mouse import Mouse
@@ -13,8 +12,14 @@ log = logging.getLogger("NightmareZone")
 logging.info('Nightmare Zone Script')
 log.setLevel(logging.DEBUG)
 
-array_list_potions_enum = [Items.ITEM_ABSORPTION_POTION_4, Items.ITEM_ABSORPTION_POTION_3,
-                           Items.ITEM_ABSORPTION_POTION_2, Items.ITEM_ABSORPTION_POTION_1]
+list_absorption_potions_enum = [Items.ITEM_ABSORPTION_POTION_4, Items.ITEM_ABSORPTION_POTION_3,
+                                Items.ITEM_ABSORPTION_POTION_2, Items.ITEM_ABSORPTION_POTION_1]
+
+list_abs_potions_enum = [Items.ITEM_ABS_POTION_4, Items.ITEM_ABS_POTION_3,
+                         Items.ITEM_ABS_POTION_2, Items.ITEM_ABS_POTION_1]
+
+list_super_range_potions_enum = [Items.ITEM_SUPER_RANGE_POTION_4, Items.ITEM_SUPER_RANGE_POTION_3,
+                                 Items.ITEM_SUPER_RANGE_POTION_2, Items.ITEM_SUPER_RANGE_POTION_1]
 
 
 def main():  # Main method for the script, write code here
@@ -35,30 +40,37 @@ def main():  # Main method for the script, write code here
         sys.exit('Sleep times were not correct!')
     input('Press enter to start...')
 
-    prev_interval_abs_pots = None
+    prev_intervals_absorption_doses = None
 
     while True:
         open_inventory_if_closed()
 
         log.info('Trying to find absorption potions')
 
-        absorption_potions = get_absorption_potion_locations_and_doses()
-        if get_doses_left(absorption_potions) == get_doses_left(prev_interval_abs_pots):
-            sys.exit('Did not drink any absorption potions after an sleep, exiting!')
-        prev_interval_abs_pots = absorption_potions
+        absorption_potions = get_potion_doses_and_locations(list_abs_potions_enum, 0.96)
+        this_intervals_absorption_doses = get_doses_left(absorption_potions)
 
         log.info('Drinking absorption potions until full')
         drink_absorptions_until_full(absorption_potions)
 
+        if this_intervals_absorption_doses == prev_intervals_absorption_doses:
+            sys.exit('Did not drink any absorption potions after an sleep, exiting!')
+        prev_intervals_absorption_doses = this_intervals_absorption_doses
+
         log.info('Trying to find rock cake and guzzle it')
         find_and_guzzle_rock_cake()
+
+        super_range_potions = get_potion_doses_and_locations(list_super_range_potions_enum, 0.96)
+        drink_dose(super_range_potions)
+
         Mouse.move_humanly_mouse_to_location(5, 5)
         if not get_doses_left(absorption_potions) > 0:
             break
 
         temp_min_interval = int(min_interval * 60 * 1000)
         temp_max_interval = int(max_interval * 60 * 1000)
-        Mouse.sleep_with_countdown(temp_min_interval, temp_max_interval, 10000)
+        Mouse.sleep_with_countdown(temp_min_interval, temp_max_interval, 40000)
+
 
 ########################################################################################################################
 def open_inventory_if_closed():
@@ -86,10 +98,9 @@ def guzzle_rock_cake_uncached():
     i = 0  # fail-safe check
     while True:
         i += 1
-        log.info('Checking whether hp is 1')
         hp_1_location = Mouse.get_on_screen(UI.UI_ICON_HP, 0.995)
         if hp_1_location is None:
-            log.info('HP is not 1, guzzling rock rake')
+            log.info('Guzzling if hp is not 1')
             guzzle_rock_cake()
             if i == 50:
                 sys.exit('Something went wrong with guzzling rock cake!')
@@ -123,9 +134,19 @@ def drink_absorptions_until_full(pots_location_list):
     return
 
 
+def drink_dose(pots_location_list):
+    Mouse.move_humanly_mouse_random_location_in_box((
+        pots_location_list[0].x,
+        pots_location_list[0].y,
+        pots_location_list[0].width,
+        pots_location_list[0].height
+    ))
+    Mouse.click(170)
+
+
 def get_absorption_potion_locations_and_doses():
     abs_pot_list = []
-    for item in array_list_potions_enum:
+    for item in list_absorption_potions_enum:
         for potion in Mouse.get_all_on_screen_as_list(item, .999):
             doses = (int(str(item)[-1]))
             absorption_potion = AbsorptionPotion(potion[0], potion[1], potion[2], potion[3], doses)
@@ -136,10 +157,20 @@ def get_absorption_potion_locations_and_doses():
     return abs_pot_list
 
 
-def get_doses_left(potions):
-    if potions is None:
-        return 0
+def get_potion_doses_and_locations(potions_enum, confidence):
+    abs_pot_list = []
+    for item in potions_enum:
+        for potion in Mouse.get_all_on_screen_as_list(item, confidence):
+            doses = (int(str(item)[-1]))
+            absorption_potion = AbsorptionPotion(potion[0], potion[1], potion[2], potion[3], doses)
+            abs_pot_list.append(absorption_potion)
+    # sorting by x, y coordinates
+    abs_pot_list.sort(key=operator.itemgetter(0))
+    abs_pot_list.sort(key=operator.itemgetter(1))
+    return abs_pot_list
 
+
+def get_doses_left(potions):
     dose_counter = 0
     for potion in potions:
         dose_counter += potion.doses
