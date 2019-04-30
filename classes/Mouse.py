@@ -39,7 +39,7 @@ class Mouse:
         log.debug('Created image grab after sleep')
 
         i = 0
-        while i < 5 and ImageHandler.compare_cached_images(im_before, im_after):
+        while i < 9 and ImageHandler.compare_cached_images(im_before, im_after):
             im_after = ImageHandler.get_image_out_of_bbox(bbox_to_compare)
             sleep = randint(20, 40)
             time.sleep(sleep / 1000)
