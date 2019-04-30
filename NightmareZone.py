@@ -12,9 +12,6 @@ log = logging.getLogger("NightmareZone")
 logging.info('Nightmare Zone Script')
 log.setLevel(logging.DEBUG)
 
-list_absorption_potions_enum = [Items.ITEM_ABSORPTION_POTION_4, Items.ITEM_ABSORPTION_POTION_3,
-                                Items.ITEM_ABSORPTION_POTION_2, Items.ITEM_ABSORPTION_POTION_1]
-
 list_abs_potions_enum = [Items.ITEM_ABS_POTION_4, Items.ITEM_ABS_POTION_3,
                          Items.ITEM_ABS_POTION_2, Items.ITEM_ABS_POTION_1]
 
