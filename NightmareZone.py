@@ -125,7 +125,7 @@ def drink_absorptions_until_full(pots_location_list):
             ))
             while pots_location_list[i].doses > 0:
                 log.info('Drinking a dose of absorption potion')
-                if not Mouse.click_and_sleep_and_return_if_change_occurred(30, 30, 587, 734):
+                if not Mouse.click_and_sleep_and_return_if_change_occurred(30, 30, 332, 467):
                     return
                 pots_location_list[i].doses -= 1
         i += 1
@@ -142,26 +142,13 @@ def drink_dose(pots_location_list):
     Mouse.click(170)
 
 
-def get_absorption_potion_locations_and_doses():
-    abs_pot_list = []
-    for item in list_absorption_potions_enum:
-        for potion in Mouse.get_all_on_screen_as_list(item, .999):
-            doses = (int(str(item)[-1]))
-            absorption_potion = AbsorptionPotion(potion[0], potion[1], potion[2], potion[3], doses)
-            abs_pot_list.append(absorption_potion)
-    # sorting by x, y coordinates
-    abs_pot_list.sort(key=operator.itemgetter(0))
-    abs_pot_list.sort(key=operator.itemgetter(1))
-    return abs_pot_list
-
-
 def get_potion_doses_and_locations(potions_enum, confidence):
     abs_pot_list = []
     for item in potions_enum:
         for potion in Mouse.get_all_on_screen_as_list(item, confidence):
             doses = (int(str(item)[-1]))
-            absorption_potion = AbsorptionPotion(potion[0], potion[1], potion[2], potion[3], doses)
-            abs_pot_list.append(absorption_potion)
+            potions = AbsorptionPotion(potion[0], potion[1], potion[2], potion[3], doses)
+            abs_pot_list.append(potions)
     # sorting by x, y coordinates
     abs_pot_list.sort(key=operator.itemgetter(0))
     abs_pot_list.sort(key=operator.itemgetter(1))
