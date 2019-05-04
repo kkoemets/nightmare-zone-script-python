@@ -45,11 +45,11 @@ def main():  # Main method for the script, write code here
         log.info('Trying to find absorption potions')
 
         absorption_potions = get_potion_doses_and_locations(list_abs_potions_enum, 0.96)
-        this_intervals_absorption_doses = get_doses_left(absorption_potions)
 
         log.info('Drinking absorption potions until full')
         drink_absorptions_until_full(absorption_potions)
 
+        this_intervals_absorption_doses = get_doses_left(absorption_potions)
         if this_intervals_absorption_doses == prev_intervals_absorption_doses:
             sys.exit('Did not drink any absorption potions after an sleep, exiting!')
         prev_intervals_absorption_doses = this_intervals_absorption_doses
