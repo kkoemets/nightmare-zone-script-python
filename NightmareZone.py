@@ -37,8 +37,6 @@ def main():  # Main method for the script, write code here
         sys.exit('Sleep times were not correct!')
     input('Press enter to start...')
 
-    prev_intervals_absorption_doses = None
-
     while True:
         open_inventory_if_closed()
 
@@ -46,13 +44,13 @@ def main():  # Main method for the script, write code here
 
         absorption_potions = get_potion_doses_and_locations(list_abs_potions_enum, 0.96)
 
+        absorption_doses_before_drinking = get_doses_left(absorption_potions)
         log.info('Drinking absorption potions until full')
         drink_absorptions_until_full(absorption_potions)
+        absorption_doses_after_drinking = get_doses_left(absorption_potions)
 
-        this_intervals_absorption_doses = get_doses_left(absorption_potions)
-        if this_intervals_absorption_doses == prev_intervals_absorption_doses:
+        if absorption_doses_before_drinking == absorption_doses_after_drinking:
             sys.exit('Did not drink any absorption potions after an sleep, exiting!')
-        prev_intervals_absorption_doses = this_intervals_absorption_doses
 
         log.info('Trying to find rock cake and guzzle it')
         find_and_guzzle_rock_cake()
