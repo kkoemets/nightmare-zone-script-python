@@ -131,6 +131,8 @@ def drink_absorptions_until_full(pots_location_list):
 
 
 def drink_dose(pots_location_list):
+    if len(pots_location_list) < 1:
+        return
     Mouse.move_humanly_mouse_random_location_in_box((
         pots_location_list[0].x,
         pots_location_list[0].y,
