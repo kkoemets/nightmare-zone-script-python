@@ -57,7 +57,8 @@ def main():  # Main method for the script, write code here
 
         super_ranging_potions = get_potion_doses_and_locations(list_super_ranging_potions_enum, 0.96)
         log.debug('Drinking super ranging potion')
-        drink_dose(super_ranging_potions)
+        if len(super_ranging_potions) > 0:
+            drink_dose(super_ranging_potions)
 
         Mouse.move_humanly_mouse_to_location(5, 5)
         if not get_doses_left(absorption_potions) > 0:
@@ -131,8 +132,6 @@ def drink_absorptions_until_full(pots_location_list):
 
 
 def drink_dose(pots_location_list):
-    if len(pots_location_list) < 1:
-        return
     Mouse.move_humanly_mouse_random_location_in_box((
         pots_location_list[0].x,
         pots_location_list[0].y,
