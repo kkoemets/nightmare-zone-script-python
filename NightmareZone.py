@@ -56,18 +56,20 @@ def main():  # Main method for the script, write code here
         find_and_guzzle_rock_cake()
 
         super_ranging_potions = get_potion_doses_and_locations(list_super_ranging_potions_enum, 0.96)
-        log.debug('Drinking super ranging potion')
+
         if len(super_ranging_potions) > 0:
+            log.debug('Drinking super ranging potion')
             drink_dose(super_ranging_potions)
 
         Mouse.move_humanly_mouse_to_location(5, 5)
+
         if not get_doses_left(absorption_potions) > 0:
             break
-
-        temp_min_interval = int(min_interval * 60 * 1000)
-        temp_max_interval = int(max_interval * 60 * 1000)
-        Mouse.sleep_with_countdown(temp_min_interval, temp_max_interval, 40000)
-
+        else:
+            temp_min_interval = int(min_interval * 60 * 1000)
+            temp_max_interval = int(max_interval * 60 * 1000)
+            Mouse.sleep_with_countdown(temp_min_interval, temp_max_interval, 40000)
+    sys.exit('No more absorption potions left, exiting script!')
 
 ########################################################################################################################
 def open_inventory_if_closed():
