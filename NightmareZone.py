@@ -55,8 +55,6 @@ def overload_mode():
             absorption_potions = drink_absorption_potions()
         do_drink_absorptions = do_drink_absorptions is False
 
-        find_potion_and_drink_a_dose(list_abs_potions_enum)
-
         find_potion_and_drink_a_dose(list_overload_potions_enum)
 
         Mouse.sleep_with_countdown(8530, 9777, 10000)
