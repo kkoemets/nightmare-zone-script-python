@@ -45,8 +45,8 @@ def main():  # Main method for the script, write code here
 
 ########################################################################################################################
 def overload_mode():
-    min_interval = 5.1
-    max_interval = 5.7
+    min_interval = 5.05
+    max_interval = 5.1
     input('Press enter to start...')
     while True:
         open_inventory_if_closed()
