@@ -26,7 +26,7 @@ list_overload_potions_enum = [Items.ITEM_OVERLOAD_POTION_4,
                               Items.ITEM_OVERLOAD_POTION_1]
 
 
-def main():  # Main method for the script, write code here
+def main():  # Root
     print('Welcome to Nightmare Zone Script')
     print('Requirements: ')
     print('1. Make sure you are in a dream with absorption potions')
@@ -43,7 +43,6 @@ def main():  # Main method for the script, write code here
     if mode is '2':
         overload_mode()
 
-########################################################################################################################
 def overload_mode():
     do_drink_absorptions = True
     min_interval = 5.05
