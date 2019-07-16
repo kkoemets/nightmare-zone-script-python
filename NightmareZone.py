@@ -15,8 +15,15 @@ log.setLevel(logging.DEBUG)
 list_abs_potions_enum = [Items.ITEM_ABS_POTION_4, Items.ITEM_ABS_POTION_3,
                          Items.ITEM_ABS_POTION_2, Items.ITEM_ABS_POTION_1]
 
-list_super_ranging_potions_enum = [Items.ITEM_SUPER_RANGING_POTION_4, Items.ITEM_SUPER_RANGING_POTION_3,
-                                   Items.ITEM_SUPER_RANGING_POTION_2, Items.ITEM_SUPER_RANGING_POTION_1]
+list_super_ranging_potions_enum = [Items.ITEM_SUPER_RANGING_POTION_4,
+                                   Items.ITEM_SUPER_RANGING_POTION_3,
+                                   Items.ITEM_SUPER_RANGING_POTION_2,
+                                   Items.ITEM_SUPER_RANGING_POTION_1]
+
+list_overload_potions_enum = [Items.ITEM_OVERLOAD_POTION_4,
+                              Items.ITEM_OVERLOAD_POTION_3,
+                              Items.ITEM_OVERLOAD_POTION_2,
+                              Items.ITEM_OVERLOAD_POTION_1]
 
 
 def main():  # Main method for the script, write code here
@@ -26,40 +33,29 @@ def main():  # Main method for the script, write code here
     print('2. Rock Cake must be in the last row of inventory')
     print('3. With this version do not move/resize OSRS client window')
     print('4. All requirements above must be fulfilled to avoid a ban')
-    min_interval = input('Enter minimum time in minutes to sleep (minimum 2 min): ')
-    max_interval = input('Enter maximum time in minutes to sleep (maximum 19 min): ')
-    try:
-        min_interval = float(min_interval)
-        max_interval = float(max_interval)
-    except ValueError:
-        sys.exit('Sleep min/max time was not a number!')
-    if min_interval < 2 or max_interval > 19 or min_interval >= max_interval:
-        sys.exit('Sleep times were not correct!')
-    input('Press enter to start...')
+    mode = ''
+    while mode != '1' and mode != '2':
+        mode = input('Type 1 for varying time mode, type 2 for overload mode: ')
+        print(mode)
 
+    if mode is '1':
+        super_ranging_mode()
+    if mode is '2':
+        overload_mode()
+
+########################################################################################################################
+def overload_mode():
+    min_interval = 5.1
+    max_interval = 5.7
+    input('Press enter to start...')
     while True:
         open_inventory_if_closed()
 
-        log.info('Trying to find absorption potions')
-
-        absorption_potions = get_potion_doses_and_locations(list_abs_potions_enum, 0.96)
-
-        absorption_doses_before_drinking = get_doses_left(absorption_potions)
-        log.info('Drinking absorption potions until full')
-        drink_absorptions_until_full(absorption_potions)
-        absorption_doses_after_drinking = get_doses_left(absorption_potions)
-
-        if absorption_doses_before_drinking == absorption_doses_after_drinking:
-            sys.exit('Did not drink any absorption potions after an sleep, exiting!')
-
-        log.info('Trying to find rock cake and guzzle it')
         find_and_guzzle_rock_cake()
 
-        super_ranging_potions = get_potion_doses_and_locations(list_super_ranging_potions_enum, 0.96)
+        find_potion_and_drink_a_dose(list_overload_potions_enum)
 
-        if len(super_ranging_potions) > 0:
-            log.debug('Drinking super ranging potion')
-            drink_dose(super_ranging_potions)
+        absorption_potions = drink_absorption_potions()
 
         Mouse.move_humanly_mouse_to_location(5, 5)
 
@@ -71,7 +67,62 @@ def main():  # Main method for the script, write code here
             Mouse.sleep_with_countdown(temp_min_interval, temp_max_interval, 40000)
     sys.exit('No more absorption potions left, exiting script!')
 
-########################################################################################################################
+
+def super_ranging_mode():
+    min_interval = input('Enter minimum time in minutes to sleep (minimum 2 min): ')
+    max_interval = input('Enter maximum time in minutes to sleep (maximum 19 min): ')
+    try:
+        min_interval = float(min_interval)
+        max_interval = float(max_interval)
+    except ValueError:
+        sys.exit('Sleep min/max time was not a number!')
+    if min_interval < 2 or max_interval > 19 or min_interval >= max_interval:
+        sys.exit('Sleep times were not correct!')
+    input('Press enter to start...')
+    while True:
+        open_inventory_if_closed()
+
+        log.info('Trying to find absorption potions')
+
+        absorption_potions = drink_absorption_potions()
+
+        find_and_guzzle_rock_cake()
+
+        find_potion_and_drink_a_dose(list_super_ranging_potions_enum)
+
+        Mouse.move_humanly_mouse_to_location(5, 5)
+
+        if not get_doses_left(absorption_potions) > 0:
+            break
+        else:
+            temp_min_interval = int(min_interval * 60 * 1000)
+            temp_max_interval = int(max_interval * 60 * 1000)
+            Mouse.sleep_with_countdown(temp_min_interval, temp_max_interval, 40000)
+    sys.exit('No more absorption potions left, exiting script!')
+
+
+def find_potion_and_drink_a_dose(list_of_potions):
+    potions = get_potion_doses_and_locations(list_of_potions, 0.96)
+    if len(potions) > 0:
+        log.debug('Drinking a potion defined by mode')  # TODO
+        drink_dose(potions)
+
+def drink_absorption_potions():
+    log.info('Trying to find absorption potions')
+    absorption_potions = get_potion_doses_and_locations(list_abs_potions_enum, 0.96)
+    absorption_doses_before_drinking = get_doses_left(absorption_potions)
+
+    log.info('Drinking absorption potions until full')
+    drink_absorptions_until_full(absorption_potions)
+    absorption_doses_after_drinking = get_doses_left(absorption_potions)
+
+    if absorption_doses_before_drinking == absorption_doses_after_drinking:
+        sys.exit('Did not drink any absorption potions after an sleep, exiting!')
+    log.info('Trying to find rock cake and guzzle it')
+
+    return absorption_potions
+
+
 def open_inventory_if_closed():
     inventory = Mouse.get_on_screen(PanelIcons.ICON_INVENTORY_SELECTED, 0.991)
     if inventory is None:
@@ -88,7 +139,8 @@ def find_and_guzzle_rock_cake():
     if cake_location is None:
         sys.exit('Could not find rock cake, exiting script')
     else:
-        random_location = cake_location[0] + Mouse.get_rand_int(0, 16), cake_location[1] + Mouse.get_rand_int(0, 1)
+        random_location = cake_location[0] + Mouse.get_rand_int(0, 16), cake_location[
+            1] + Mouse.get_rand_int(0, 1)
         Mouse.move_humanly_mouse_to_location(random_location[0], random_location[1])
         guzzle_rock_cake_uncached()
 
