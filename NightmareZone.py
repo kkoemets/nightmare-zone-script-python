@@ -45,14 +45,21 @@ def main():  # Main method for the script, write code here
 
 ########################################################################################################################
 def overload_mode():
+    do_drink_absorptions = True
     min_interval = 5.05
     max_interval = 5.1
     input('Press enter to start...')
     while True:
         open_inventory_if_closed()
-        absorption_potions = drink_absorption_potions()
+        if do_drink_absorptions:
+            absorption_potions = drink_absorption_potions()
+        do_drink_absorptions = do_drink_absorptions is False
+
+        find_potion_and_drink_a_dose(list_abs_potions_enum)
 
         find_potion_and_drink_a_dose(list_overload_potions_enum)
+
+        Mouse.sleep_with_countdown(8530, 9777, 10000)
 
         find_and_guzzle_rock_cake()
 
