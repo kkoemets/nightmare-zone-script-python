@@ -50,12 +50,11 @@ def overload_mode():
     input('Press enter to start...')
     while True:
         open_inventory_if_closed()
-
-        find_and_guzzle_rock_cake()
+        absorption_potions = drink_absorption_potions()
 
         find_potion_and_drink_a_dose(list_overload_potions_enum)
 
-        absorption_potions = drink_absorption_potions()
+        find_and_guzzle_rock_cake()
 
         Mouse.move_humanly_mouse_to_location(5, 5)
 
