@@ -55,7 +55,7 @@ def overload_mode():
             absorption_potions = drink_absorption_potions()
         do_drink_absorptions = do_drink_absorptions is False
 
-        find_potion_and_drink_a_dose(list_overload_potions_enum)
+        overload_doses = find_potion_and_drink_a_dose(list_overload_potions_enum)
 
         Mouse.sleep_with_countdown(8530, 9777, 10000)
 
@@ -63,7 +63,7 @@ def overload_mode():
 
         Mouse.move_humanly_mouse_to_location(5, 5)
 
-        if not get_doses_left(absorption_potions) > 0:
+        if not get_doses_left(absorption_potions) > 0 or not get_doses_left(overload_doses) > 0:
             break
         else:
             temp_min_interval = int(min_interval * 60 * 1000)
@@ -110,6 +110,7 @@ def find_potion_and_drink_a_dose(list_of_potions):
     if len(potions) > 0:
         log.debug('Drinking a potion defined by mode')  # TODO
         drink_dose(potions)
+    return potions
 
 def drink_absorption_potions():
     log.info('Trying to find absorption potions')
