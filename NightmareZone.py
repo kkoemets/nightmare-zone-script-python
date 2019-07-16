@@ -2,7 +2,7 @@ import logging
 import operator
 import sys
 
-from classes.AbsorptionPotion import AbsorptionPotion
+from classes.Potion import Potion
 from classes.Mouse import Mouse
 from enums.Items import Items
 from enums.PanelIcons import PanelIcons
@@ -204,7 +204,7 @@ def get_potion_doses_and_locations(potions_enum, confidence):
     for item in potions_enum:
         for potion in Mouse.get_all_on_screen_as_list(item, confidence):
             doses = (int(str(item)[-1]))
-            potions = AbsorptionPotion(potion[0], potion[1], potion[2], potion[3], doses)
+            potions = Potion(potion[0], potion[1], potion[2], potion[3], doses)
             abs_pot_list.append(potions)
     # sorting by x, y coordinates
     abs_pot_list.sort(key=operator.itemgetter(0))
