@@ -43,6 +43,7 @@ def main():  # Root
     if mode is '2':
         overload_mode()
 
+
 def overload_mode():
     do_drink_absorptions = True
     min_interval = 5.05
@@ -63,7 +64,9 @@ def overload_mode():
 
         Mouse.move_humanly_mouse_to_location(5, 5)
 
-        if not get_doses_left(absorption_potions) > 0 or not get_doses_left(overload_doses) > 0:
+        if (not get_doses_left(
+                absorption_potions) > 0 and do_drink_absorptions is False) or not get_doses_left(
+                overload_doses) > 0:
             break
         else:
             temp_min_interval = int(min_interval * 60 * 1000)
@@ -111,6 +114,7 @@ def find_potion_and_drink_a_dose(list_of_potions):
         log.debug('Drinking a potion defined by mode')  # TODO
         drink_dose(potions)
     return potions
+
 
 def drink_absorption_potions():
     log.info('Trying to find absorption potions')
