@@ -35,7 +35,7 @@ def main():  # Root
     print('4. All requirements above must be fulfilled to avoid a ban')
     mode = ''
     while mode != '1' and mode != '2':
-        mode = input('Type 1 for varying time mode, type 2 for overload mode: ')
+        mode = input('Type 1 for varying time mode, type 2 for overload mode (and press enter): ')
         print(mode)
 
     if mode is '1':
@@ -47,11 +47,12 @@ def overload_mode():
     do_drink_absorptions = True
     min_interval = 5.05
     max_interval = 5.1
+    input('You need to have absorption potions, overloads and a rock cake in your inventory')
     input('Press enter to start...')
     while True:
         open_inventory_if_closed()
-        if do_drink_absorptions:
-            absorption_potions = drink_absorption_potions()
+
+        absorption_potions = drink_absorption_potions() if do_drink_absorptions else []
         do_drink_absorptions = do_drink_absorptions is False
 
         overload_doses = find_potion_and_drink_a_dose(list_overload_potions_enum)
