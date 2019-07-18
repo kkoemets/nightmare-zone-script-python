@@ -53,10 +53,19 @@ def overload_mode():
     while True:
         open_inventory_if_closed()
 
-        absorption_potions = drink_absorption_potions() if do_drink_absorptions else []
+        absorption_potions = \
+            drink_absorptions_until_full(get_potion_doses_and_locations(
+                list_abs_potions_enum, 0.96)) if do_drink_absorptions else []
         do_drink_absorptions = do_drink_absorptions is False
 
-        overload_doses = find_potion_and_drink_a_dose(list_overload_potions_enum)
+        overload_potions = get_potion_doses_and_locations(list_overload_potions_enum, 0.96)
+        overload_doses_before_drinking = get_doses_left(overload_potions)
+        drink_a_dose_if_possible(overload_potions)
+
+        if overload_doses_before_drinking == get_doses_left(get_potion_doses_and_locations(
+                list_overload_potions_enum, 0.96)):
+            log.info('Did not drink a dose of overload potion, exiting script')
+            break
 
         Mouse.sleep_with_countdown(8530, 9777, 10000)
 
@@ -65,8 +74,8 @@ def overload_mode():
         Mouse.move_humanly_mouse_to_location(5, 5)
 
         if (not get_doses_left(
-                absorption_potions) > 0 and do_drink_absorptions is False) or not get_doses_left(
-                overload_doses) > 0:
+                absorption_potions) > 0 and do_drink_absorptions is False) or not \
+                overload_doses_before_drinking > 0:
             break
         else:
             temp_min_interval = int(min_interval * 60 * 1000)
@@ -90,12 +99,24 @@ def super_ranging_mode():
         open_inventory_if_closed()
 
         log.info('Trying to find absorption potions')
+        absorption_potions = get_potion_doses_and_locations(list_abs_potions_enum, 0.96)
+        absorption_potions_doses_before_drinking = get_doses_left(absorption_potions)
 
-        absorption_potions = drink_absorption_potions()
+        log.info('Drinking absorption potions until full')
+        drink_absorptions_until_full(absorption_potions)
 
+        if absorption_potions_doses_before_drinking == get_doses_left(
+                get_potion_doses_and_locations(list_abs_potions_enum, 0.96)):
+            log.info('Did not drink absorption potions, exiting script')
+            break
+
+        log.info('Trying to find rock cake and guzzle it')
         find_and_guzzle_rock_cake()
 
-        find_potion_and_drink_a_dose(list_super_ranging_potions_enum)
+        super_ranging_potions = get_potion_doses_and_locations(list_super_ranging_potions_enum,
+                                                               0.96)
+        log.debug('Drinking super ranging potion if there are any')
+        drink_a_dose_if_possible(super_ranging_potions)
 
         Mouse.move_humanly_mouse_to_location(5, 5)
 
@@ -108,29 +129,11 @@ def super_ranging_mode():
     sys.exit('No more absorption potions left, exiting script!')
 
 
-def find_potion_and_drink_a_dose(list_of_potions):
-    potions = get_potion_doses_and_locations(list_of_potions, 0.96)
-    if len(potions) > 0:
-        log.debug('Drinking a potion defined by mode')  # TODO
-        drink_dose(potions)
-    return potions
-
-
-def drink_absorption_potions():
-    log.info('Trying to find absorption potions')
-    absorption_potions = get_potion_doses_and_locations(list_abs_potions_enum, 0.96)
-    absorption_doses_before_drinking = get_doses_left(absorption_potions)
-
-    log.info('Drinking absorption potions until full')
-    drink_absorptions_until_full(absorption_potions)
-    absorption_doses_after_drinking = get_doses_left(absorption_potions)
-
-    if absorption_doses_before_drinking == absorption_doses_after_drinking:
-        sys.exit('Did not drink any absorption potions after an sleep, exiting!')
-    log.info('Trying to find rock cake and guzzle it')
-
-    return absorption_potions
-
+def drink_a_dose_if_possible(potions_locations):
+    if len(potions_locations) > 0:
+        log.debug('Drinking a potion defined by mode')  # TODO good logging
+        drink_dose(potions_locations)
+    return potions_locations
 
 def open_inventory_if_closed():
     inventory = Mouse.get_on_screen(PanelIcons.ICON_INVENTORY_SELECTED, 0.991)
