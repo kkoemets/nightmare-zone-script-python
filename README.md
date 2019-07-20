@@ -2,7 +2,7 @@
 
 Requirements:  
 a) Windows 10  
-b) Python 3.7+ 
+b) Python 3.7+  
 c) OSRS client fixed size &  brightness 2nd option (image based script)
 
 Script has 2 modes:
