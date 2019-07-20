@@ -53,28 +53,30 @@ def overload_mode():
     while True:
         open_inventory_if_closed()
 
-        absorption_potions = get_potion_doses_and_locations(list_abs_potions_enum, 0.96)
+        absorption_potions = get_potion_doses_and_locations(list_abs_potions_enum, 0.985)
+        abs_doses_left = get_doses_left(absorption_potions)
 
         if do_drink_absorptions:
             drink_absorptions_until_full(absorption_potions)
 
         do_drink_absorptions = do_drink_absorptions is False
 
-        overload_potions = get_potion_doses_and_locations(list_overload_potions_enum, 0.96)
+        overload_potions = get_potion_doses_and_locations(list_overload_potions_enum, 0.985)
         overload_doses_before_drinking = get_doses_left(overload_potions)
         drink_a_dose_if_possible(overload_potions)
+        Mouse.move_humanly_mouse_to_location(5, 5)
 
-        if overload_doses_before_drinking == get_doses_left(get_potion_doses_and_locations(
-                list_overload_potions_enum, 0.96)):
+        after_drinking_doses = get_doses_left(get_potion_doses_and_locations(list_overload_potions_enum, 0.985))
+        if overload_doses_before_drinking == after_drinking_doses:
             sys.exit('Did not drink a dose of overload potion, exiting script')
 
-        Mouse.sleep_with_countdown(8530, 9777, 10000)
+        Mouse.sleep_with_countdown(2395, 3542, 10000)
 
         find_and_guzzle_rock_cake()
 
         Mouse.move_humanly_mouse_to_location(5, 5)
 
-        if not get_doses_left(absorption_potions) > 0 or not overload_doses_before_drinking > 0:
+        if not abs_doses_left > 0 or not overload_doses_before_drinking > 0:
             break
         else:
             temp_min_interval = int(min_interval * 60 * 1000)
