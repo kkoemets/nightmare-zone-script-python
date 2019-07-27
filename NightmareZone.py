@@ -64,7 +64,7 @@ def overload_mode():
         overload_potions = get_potion_doses_and_locations(list_overload_potions_enum, 0.985)
         overload_doses_before_drinking = get_doses_left(overload_potions)
         drink_a_dose_if_possible(overload_potions)
-        Mouse.move_humanly_mouse_to_location(5, 5)
+        Mouse.move_humanly_mouse_to_location(20, 20)
 
         after_drinking_doses = get_doses_left(get_potion_doses_and_locations(list_overload_potions_enum, 0.985))
         if overload_doses_before_drinking == after_drinking_doses:
@@ -74,7 +74,7 @@ def overload_mode():
 
         find_and_guzzle_rock_cake()
 
-        Mouse.move_humanly_mouse_to_location(5, 5)
+        Mouse.move_humanly_mouse_to_location(20, 20)
 
         if not abs_doses_left > 0 or not overload_doses_before_drinking > 0:
             break
@@ -144,6 +144,7 @@ def open_inventory_if_closed():
         else:
             Mouse.move_humanly_mouse_random_location_in_box(inventory)
             Mouse.click(200)
+            Mouse.sleep_with_countdown(400, 450, 450)
 
 
 def find_and_guzzle_rock_cake():
